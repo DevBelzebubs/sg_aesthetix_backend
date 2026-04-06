@@ -15,11 +15,8 @@ import { ListAppointmentsInputDto } from '../../application/dto/input/list-appoi
 import { UpdateAppointmentInputDto } from '../../application/dto/input/update-appointment.input';
 import { AppointmentOutputDto } from '../../application/dto/output/appointment.output';
 import { DeleteAppointmentOutputDto } from '../../application/dto/output/delete-appointment.output';
-import { CreateAppointmentInputPort } from '../../application/ports/input/create-appointment.input-port';
-import { DeleteAppointmentInputPort } from '../../application/ports/input/delete-appointment.input-port';
-import { GetAppointmentInputPort } from '../../application/ports/input/get-appointment.input-port';
-import { ListAppointmentsInputPort } from '../../application/ports/input/list-appointments.input-port';
-import { UpdateAppointmentInputPort } from '../../application/ports/input/update-appointment.input-port';
+import { AppointmentCommandInputPort } from '../../application/ports/input/appointment.command.input-port';
+import { AppointmentQueryInputPort } from '../../application/ports/input/appointment.query.input-port';
 import { CreateAppointmentRequestDto } from '../../interfaces/dto/create-appointment.request';
 import { UpdateAppointmentRequestDto } from '../../interfaces/dto/update-appointment.request';
 
@@ -30,11 +27,8 @@ type RequestWithTenant = {
 @Controller('appointments')
 export class AppointmentsController {
   constructor(
-    private readonly createAppointmentInputPort: CreateAppointmentInputPort,
-    private readonly updateAppointmentInputPort: UpdateAppointmentInputPort,
-    private readonly deleteAppointmentInputPort: DeleteAppointmentInputPort,
-    private readonly getAppointmentInputPort: GetAppointmentInputPort,
-    private readonly listAppointmentsInputPort: ListAppointmentsInputPort,
+    private readonly appointmentCommandInputPort: AppointmentCommandInputPort,
+    private readonly appointmentQueryInputPort: AppointmentQueryInputPort,
   ) {}
 
   @Post()
@@ -56,7 +50,7 @@ export class AppointmentsController {
       notes: body.notes,
     };
 
-    return this.createAppointmentInputPort.execute(input);
+    return this.appointmentCommandInputPort.create(input);
   }
 
   @Get()
@@ -67,7 +61,7 @@ export class AppointmentsController {
       tenantId: request.tenantId,
     };
 
-    return this.listAppointmentsInputPort.execute(input);
+    return this.appointmentQueryInputPort.list(input);
   }
 
   @Get(':id')
@@ -80,7 +74,7 @@ export class AppointmentsController {
       id,
     };
 
-    return this.getAppointmentInputPort.execute(input);
+    return this.appointmentQueryInputPort.get(input);
   }
 
   @Patch(':id')
@@ -103,7 +97,7 @@ export class AppointmentsController {
       notes: body.notes,
     };
 
-    return this.updateAppointmentInputPort.execute(input);
+    return this.appointmentCommandInputPort.update(input);
   }
 
   @Delete(':id')
@@ -116,6 +110,6 @@ export class AppointmentsController {
       id,
     };
 
-    return this.deleteAppointmentInputPort.execute(input);
+    return this.appointmentCommandInputPort.delete(input);
   }
 }

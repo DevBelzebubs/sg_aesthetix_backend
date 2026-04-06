@@ -1,19 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { GetAppointmentInputDto } from '../dto/input/get-appointment.input';
-import { AppointmentOutputMapper } from '../dto/output/appointment-output.mapper';
+import { ListAppointmentsInputDto } from '../dto/input/list-appointments.input';
 import { AppointmentOutputDto } from '../dto/output/appointment.output';
-import { GetAppointmentInputPort } from '../ports/input/get-appointment.input-port';
+import { AppointmentOutputMapper } from '../dto/output/appointment-output.mapper';
+import { AppointmentQueryInputPort } from '../ports/input/appointment.query.input-port';
 import { AppointmentRepositoryOutputPort } from '../ports/output/appointment.repository.output-port';
 
 @Injectable()
-export class GetAppointmentQueryService extends GetAppointmentInputPort {
+export class AppointmentQueryService extends AppointmentQueryInputPort {
   constructor(
     private readonly appointmentRepository: AppointmentRepositoryOutputPort,
   ) {
     super();
   }
 
-  async execute(input: GetAppointmentInputDto): Promise<AppointmentOutputDto> {
+  async get(input: GetAppointmentInputDto): Promise<AppointmentOutputDto> {
     const appointment = await this.appointmentRepository.findById(
       input.tenantId,
       input.id,
@@ -24,5 +25,13 @@ export class GetAppointmentQueryService extends GetAppointmentInputPort {
     }
 
     return AppointmentOutputMapper.toDto(appointment);
+  }
+
+  async list(input: ListAppointmentsInputDto): Promise<AppointmentOutputDto[]> {
+    const appointments = await this.appointmentRepository.findAllByTenant(
+      input.tenantId,
+    );
+
+    return AppointmentOutputMapper.toDtoList(appointments);
   }
 }

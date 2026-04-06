@@ -14,6 +14,8 @@ export class TenantContextInterceptor implements NestInterceptor {
       user?: { tenantId?: string };
       tenantId?: string;
       path?: string;
+      method?: string;
+      headers: Record<string, string | string[] | undefined>;
     }>();
 
     if (
@@ -21,6 +23,19 @@ export class TenantContextInterceptor implements NestInterceptor {
       request.path === '/api/' ||
       request.path?.startsWith('/api/tenants')
     ) {
+      return next.handle();
+    }
+
+    if (request.path === '/api/appointments' && request.method === 'POST') {
+      const publicTenantId = request.headers['x-tenant-id'] as string;
+
+      if (!publicTenantId) {
+        throw new ForbiddenException(
+          'Header x-tenant-id is required for public bookings',
+        );
+      }
+
+      request.tenantId = publicTenantId;
       return next.handle();
     }
 

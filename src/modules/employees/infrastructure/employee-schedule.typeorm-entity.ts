@@ -32,7 +32,12 @@ export class EmployeeScheduleTypeOrmEntity {
   @Column({ name: 'vigencia_hasta', type: 'date', nullable: true })
   validUntil!: string | null;
 
-  @Column({ name: 'esta_activo', type: 'tinyint', width: 1, default: () => '1' })
+  @Column({
+    name: 'esta_activo',
+    type: 'tinyint',
+    width: 1,
+    default: () => '1',
+  })
   isActive!: boolean;
 
   @CreateDateColumn({ name: 'creado_en' })

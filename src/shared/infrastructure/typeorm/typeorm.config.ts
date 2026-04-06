@@ -8,5 +8,5 @@ export const buildTypeOrmConfig = (): TypeOrmModuleOptions => ({
   password: process.env.DB_PASSWORD ?? 'your_password',
   database: process.env.DB_NAME ?? 'aesthetix_db',
   autoLoadEntities: true,
-  synchronize: true,
+  synchronize: false,
 });
