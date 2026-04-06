@@ -8,62 +8,52 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { TenantTypeOrmEntity } from '../../tenants/infrastructure/tenant.typeorm-entity';
-import { ServiceType } from '../domain/service.entity';
 import { ServiceCategoryTypeOrmEntity } from './service-category.typeorm-entity';
 
-@Entity({ name: 'services' })
+@Entity({ name: 'servicios' })
 export class ServiceTypeOrmEntity {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryColumn('char', { length: 36 })
   id!: string;
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 36 })
+  @Column({ name: 'empresa_id', type: 'char', length: 36 })
   tenantId!: string;
 
-  @Column({ name: 'category_id', type: 'varchar', length: 36 })
-  categoryId!: string;
+  @Column({ name: 'categoria_servicio_id', type: 'int' })
+  categoryId!: number;
 
-  @Column('varchar', { length: 120 })
+  @Column('varchar', { length: 150 })
   name!: string;
 
-  @Column('text')
-  description!: string;
+  @Column({ name: 'descripcion', type: 'text', nullable: true })
+  description!: string | null;
 
-  @Column({
-    type: 'enum',
-    enum: ServiceType,
-  })
-  type!: ServiceType;
-
-  @Column({ name: 'duration_min', type: 'int' })
-  durationMin!: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ name: 'precio', type: 'decimal', precision: 10, scale: 2 })
   price!: string;
 
-  @Column({ name: 'image_url', type: 'varchar', length: 500 })
-  imageUrl!: string;
+  @Column({ name: 'duracion_minutos', type: 'int' })
+  durationMin!: number;
 
-  @Column({ name: 'is_active', type: 'boolean', default: true })
+  @Column({ name: 'acumula_puntos', type: 'tinyint', width: 1, default: () => '1' })
+  accumulatesPoints!: boolean;
+
+  @Column({ name: 'esta_activo', type: 'tinyint', width: 1, default: () => '1' })
   isActive!: boolean;
 
-  @Column({ name: 'sort_order', type: 'int', default: 0 })
-  sortOrder!: number;
-
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'creado_en' })
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'actualizado_en' })
   updatedAt!: Date;
 
   @ManyToOne(() => TenantTypeOrmEntity, {
     nullable: false,
   })
-  @JoinColumn({ name: 'tenant_id' })
+  @JoinColumn({ name: 'empresa_id' })
   tenant!: TenantTypeOrmEntity;
 
   @ManyToOne(() => ServiceCategoryTypeOrmEntity, {
     nullable: false,
   })
-  @JoinColumn({ name: 'category_id' })
+  @JoinColumn({ name: 'categoria_servicio_id' })
   category!: ServiceCategoryTypeOrmEntity;
 }

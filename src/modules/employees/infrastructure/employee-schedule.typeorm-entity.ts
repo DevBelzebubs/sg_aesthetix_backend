@@ -1,39 +1,50 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { TenantTypeOrmEntity } from '../../tenants/infrastructure/tenant.typeorm-entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { EmployeeTypeOrmEntity } from './employee.typeorm-entity';
 
-@Entity({ name: 'employee_schedules' })
+@Entity({ name: 'horarios_empleado' })
 export class EmployeeScheduleTypeOrmEntity {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryColumn('char', { length: 36 })
   id!: string;
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 36 })
-  tenantId!: string;
-
-  @Column({ name: 'employee_id', type: 'varchar', length: 36 })
+  @Column({ name: 'empleado_id', type: 'char', length: 36 })
   employeeId!: string;
 
-  @Column({ name: 'day_of_week', type: 'tinyint' })
+  @Column({ name: 'dia_semana', type: 'tinyint' })
   dayOfWeek!: number;
 
-  @Column({ name: 'start_time', type: 'time' })
+  @Column({ name: 'hora_inicio', type: 'time' })
   startTime!: string;
 
-  @Column({ name: 'end_time', type: 'time' })
+  @Column({ name: 'hora_fin', type: 'time' })
   endTime!: string;
 
-  @Column({ name: 'is_working', type: 'boolean', default: true })
-  isWorking!: boolean;
+  @Column({ name: 'vigencia_desde', type: 'date', nullable: true })
+  validFrom!: string | null;
 
-  @ManyToOne(() => TenantTypeOrmEntity, {
-    nullable: false,
-  })
-  @JoinColumn({ name: 'tenant_id' })
-  tenant!: TenantTypeOrmEntity;
+  @Column({ name: 'vigencia_hasta', type: 'date', nullable: true })
+  validUntil!: string | null;
+
+  @Column({ name: 'esta_activo', type: 'tinyint', width: 1, default: () => '1' })
+  isActive!: boolean;
+
+  @CreateDateColumn({ name: 'creado_en' })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ name: 'actualizado_en' })
+  updatedAt!: Date;
 
   @ManyToOne(() => EmployeeTypeOrmEntity, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'employee_id' })
+  @JoinColumn({ name: 'empleado_id' })
   employee!: EmployeeTypeOrmEntity;
 }

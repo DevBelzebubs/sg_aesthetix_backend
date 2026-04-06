@@ -7,53 +7,51 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
-import { TenantTypeOrmEntity } from '../../tenants/infrastructure/tenant.typeorm-entity';
 import { LoyaltyTransactionType } from '../domain/loyalty-transaction.entity';
 import { LoyaltyAccountTypeOrmEntity } from './loyalty-account.typeorm-entity';
 
-@Entity({ name: 'loyalty_transactions' })
-@Index('idx_loyalty_transactions_tenant_account_created_at', [
-  'tenantId',
+@Entity({ name: 'transacciones_puntos' })
+@Index('idx_transacciones_puntos_cuenta', [
   'accountId',
-  'createdAt',
 ])
 export class LoyaltyTransactionTypeOrmEntity {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryColumn('char', { length: 36 })
   id!: string;
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 36 })
-  tenantId!: string;
-
-  @Column({ name: 'account_id', type: 'varchar', length: 36 })
+  @Column({ name: 'cuenta_puntos_id', type: 'char', length: 36 })
   accountId!: string;
 
+  @Column({ name: 'venta_id', type: 'char', length: 36, nullable: true })
+  saleId!: string | null;
+
+  @Column({ name: 'canje_id', type: 'char', length: 36, nullable: true })
+  redemptionId!: string | null;
+
   @Column({
-    type: 'enum',
-    enum: LoyaltyTransactionType,
+    name: 'tipo',
+    type: 'varchar',
+    length: 20,
   })
   type!: LoyaltyTransactionType;
 
-  @Column({ type: 'int' })
-  amount!: number;
+  @Column({ name: 'puntos', type: 'int' })
+  points!: number;
 
-  @Column({ name: 'reference_id', type: 'varchar', length: 36, nullable: true })
-  referenceId!: string | null;
+  @Column({ name: 'saldo_anterior', type: 'int' })
+  previousBalance!: number;
 
-  @Column('text')
-  notes!: string;
+  @Column({ name: 'saldo_nuevo', type: 'int' })
+  newBalance!: number;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @Column({ name: 'descripcion', type: 'varchar', length: 255, nullable: true })
+  description!: string | null;
+
+  @CreateDateColumn({ name: 'creado_en' })
   createdAt!: Date;
-
-  @ManyToOne(() => TenantTypeOrmEntity, {
-    nullable: false,
-  })
-  @JoinColumn({ name: 'tenant_id' })
-  tenant!: TenantTypeOrmEntity;
 
   @ManyToOne(() => LoyaltyAccountTypeOrmEntity, {
     nullable: false,
   })
-  @JoinColumn({ name: 'account_id' })
+  @JoinColumn({ name: 'cuenta_puntos_id' })
   account!: LoyaltyAccountTypeOrmEntity;
 }

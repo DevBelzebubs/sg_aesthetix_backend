@@ -1,24 +1,35 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { ServiceTypeOrmEntity } from '../../services/infrastructure/service.typeorm-entity';
 import { EmployeeTypeOrmEntity } from './employee.typeorm-entity';
 
-@Entity({ name: 'employee_services' })
+@Entity({ name: 'empleado_servicio' })
 export class EmployeeServiceTypeOrmEntity {
-  @PrimaryColumn({ name: 'employee_id', type: 'varchar', length: 36 })
+  @PrimaryColumn({ name: 'empleado_id', type: 'char', length: 36 })
   employeeId!: string;
 
-  @PrimaryColumn({ name: 'service_id', type: 'varchar', length: 36 })
+  @PrimaryColumn({ name: 'servicio_id', type: 'char', length: 36 })
   serviceId!: string;
+
+  @CreateDateColumn({ name: 'creado_en' })
+  createdAt!: Date;
 
   @ManyToOne(() => EmployeeTypeOrmEntity, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'employee_id' })
+  @JoinColumn({ name: 'empleado_id' })
   employee!: EmployeeTypeOrmEntity;
 
   @ManyToOne(() => ServiceTypeOrmEntity, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'service_id' })
+  @JoinColumn({ name: 'servicio_id' })
   service!: ServiceTypeOrmEntity;
 }

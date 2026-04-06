@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ThemeSettingsTypeOrmEntity } from './infrastructure/theme-settings.typeorm-entity';
+import { SocialNetworkTypeOrmEntity } from './infrastructure/social-network.typeorm-entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ThemeSettingsTypeOrmEntity])],
+  imports: [TypeOrmModule.forFeature([SocialNetworkTypeOrmEntity])],
   exports: [TypeOrmModule],
 })
 export class LandingModule {}

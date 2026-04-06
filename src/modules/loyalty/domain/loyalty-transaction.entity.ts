@@ -1,40 +1,45 @@
 export enum LoyaltyTransactionType {
-  EARN = 'EARN',
-  REDEEM = 'REDEEM',
-  EXPIRE = 'EXPIRE',
-  ADJUST = 'ADJUST',
+  EARN = 'acumulacion',
+  REDEEM = 'canje',
+  ADJUST = 'ajuste',
 }
 
 export class LoyaltyTransaction {
   private constructor(
     public readonly id: string,
-    public readonly tenantId: string,
     public readonly accountId: string,
+    public readonly saleId: string | null,
+    public readonly redemptionId: string | null,
     public readonly type: LoyaltyTransactionType,
-    public readonly amount: number,
-    public readonly referenceId: string | null,
-    public readonly notes: string,
+    public readonly points: number,
+    public readonly previousBalance: number,
+    public readonly newBalance: number,
+    public readonly description: string | null,
     public readonly createdAt: Date,
   ) {}
 
   static create(params: {
     id: string;
-    tenantId: string;
     accountId: string;
+    saleId?: string | null;
+    redemptionId?: string | null;
     type: LoyaltyTransactionType;
-    amount: number;
-    referenceId?: string | null;
-    notes: string;
+    points: number;
+    previousBalance: number;
+    newBalance: number;
+    description?: string | null;
     createdAt?: Date;
   }): LoyaltyTransaction {
     return new LoyaltyTransaction(
       params.id,
-      params.tenantId,
       params.accountId,
+      params.saleId ?? null,
+      params.redemptionId ?? null,
       params.type,
-      params.amount,
-      params.referenceId ?? null,
-      params.notes,
+      params.points,
+      params.previousBalance,
+      params.newBalance,
+      params.description ?? null,
       params.createdAt ?? new Date(),
     );
   }

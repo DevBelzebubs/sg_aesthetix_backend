@@ -4,13 +4,12 @@ export class Customer extends BaseEntity {
   private constructor(
     id: string,
     public readonly tenantId: string,
-    public readonly fullName: string,
-    public readonly phone: string,
-    public readonly email: string,
+    public readonly firstName: string,
+    public readonly lastName: string,
+    public readonly phone: string | null,
+    public readonly email: string | null,
     public readonly birthDate: string | null,
-    public readonly notes: string,
-    public readonly preferredEmployeeId: string | null,
-    public readonly deletedAt: Date | null,
+    public readonly isActive: boolean,
     createdAt?: Date,
     updatedAt?: Date,
   ) {
@@ -20,26 +19,24 @@ export class Customer extends BaseEntity {
   static create(params: {
     id: string;
     tenantId: string;
-    fullName: string;
-    phone: string;
-    email: string;
+    firstName: string;
+    lastName: string;
+    phone?: string | null;
+    email?: string | null;
     birthDate?: string | null;
-    notes: string;
-    preferredEmployeeId?: string | null;
-    deletedAt?: Date | null;
+    isActive?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
   }): Customer {
     return new Customer(
       params.id,
       params.tenantId,
-      params.fullName,
-      params.phone,
-      params.email,
+      params.firstName,
+      params.lastName,
+      params.phone ?? null,
+      params.email ?? null,
       params.birthDate ?? null,
-      params.notes,
-      params.preferredEmployeeId ?? null,
-      params.deletedAt ?? null,
+      params.isActive ?? true,
       params.createdAt,
       params.updatedAt,
     );

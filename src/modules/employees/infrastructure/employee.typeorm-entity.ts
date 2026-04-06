@@ -8,62 +8,55 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UserTypeOrmEntity } from '../../identity/infrastructure/user.typeorm-entity';
-import { BranchTypeOrmEntity } from '../../tenants/infrastructure/branch.typeorm-entity';
 import { TenantTypeOrmEntity } from '../../tenants/infrastructure/tenant.typeorm-entity';
 
-@Entity({ name: 'employees' })
+@Entity({ name: 'empleados' })
 export class EmployeeTypeOrmEntity {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryColumn('char', { length: 36 })
   id!: string;
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 36 })
+  @Column({ name: 'empresa_id', type: 'char', length: 36 })
   tenantId!: string;
 
-  @Column({ name: 'branch_id', type: 'varchar', length: 36 })
-  branchId!: string;
+  @Column({ name: 'usuario_id', type: 'char', length: 36, unique: true })
+  userId!: string;
 
-  @Column({ name: 'user_id', type: 'varchar', length: 36, nullable: true })
-  userId!: string | null;
+  @Column({ name: 'nombres', type: 'varchar', length: 100 })
+  firstName!: string;
 
-  @Column({ name: 'full_name', type: 'varchar', length: 150 })
-  fullName!: string;
+  @Column({ name: 'apellidos', type: 'varchar', length: 100 })
+  lastName!: string;
 
-  @Column('varchar', { length: 20 })
-  phone!: string;
+  @Column({ name: 'telefono', type: 'varchar', length: 20, nullable: true })
+  phone!: string | null;
 
-  @Column({ name: 'photo_url', type: 'varchar', length: 500 })
-  photoUrl!: string;
+  @Column({ name: 'especialidad', type: 'varchar', length: 150, nullable: true })
+  specialty!: string | null;
 
-  @Column('text')
-  bio!: string;
+  @Column({ name: 'descripcion', type: 'text', nullable: true })
+  description!: string | null;
 
-  @Column({ name: 'commission_pct', type: 'decimal', precision: 5, scale: 2 })
-  commissionPct!: string;
+  @Column({ name: 'foto_url', type: 'varchar', length: 500, nullable: true })
+  photoUrl!: string | null;
 
-  @Column({ name: 'is_active', type: 'boolean', default: true })
+  @Column({ name: 'esta_activo', type: 'tinyint', width: 1, default: () => '1' })
   isActive!: boolean;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'creado_en' })
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'actualizado_en' })
   updatedAt!: Date;
 
   @ManyToOne(() => TenantTypeOrmEntity, {
     nullable: false,
   })
-  @JoinColumn({ name: 'tenant_id' })
+  @JoinColumn({ name: 'empresa_id' })
   tenant!: TenantTypeOrmEntity;
 
-  @ManyToOne(() => BranchTypeOrmEntity, {
+  @ManyToOne(() => UserTypeOrmEntity, {
     nullable: false,
   })
-  @JoinColumn({ name: 'branch_id' })
-  branch!: BranchTypeOrmEntity;
-
-  @ManyToOne(() => UserTypeOrmEntity, {
-    nullable: true,
-  })
-  @JoinColumn({ name: 'user_id' })
-  user!: UserTypeOrmEntity | null;
+  @JoinColumn({ name: 'usuario_id' })
+  user!: UserTypeOrmEntity;
 }

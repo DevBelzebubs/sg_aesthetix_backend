@@ -2,44 +2,42 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { BranchTypeOrmEntity } from './branch.typeorm-entity';
-import { TenantPlan, TenantStatus } from '../domain/tenant.entity';
 
-@Entity({ name: 'tenants' })
+@Entity({ name: 'empresa' })
 export class TenantTypeOrmEntity {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryColumn('char', { length: 36 })
   id!: string;
 
-  @Column('varchar', { length: 120 })
-  name!: string;
+  @Column({ name: 'nombre_comercial', type: 'varchar', length: 150 })
+  commercialName!: string;
 
-  @Column('varchar', { length: 60, unique: true })
+  @Column('varchar', { length: 120, unique: true })
   slug!: string;
 
-  @Column({
-    type: 'enum',
-    enum: TenantPlan,
-    default: TenantPlan.BASIC,
-  })
-  plan!: TenantPlan;
+  @Column('varchar', { length: 20, nullable: true, unique: true })
+  ruc!: string | null;
 
-  @Column({
-    type: 'enum',
-    enum: TenantStatus,
-    default: TenantStatus.ACTIVE,
-  })
-  status!: TenantStatus;
+  @Column({ name: 'logo_url', type: 'varchar', length: 500, nullable: true })
+  logoUrl!: string | null;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @Column({ name: 'telefono', type: 'varchar', length: 20, nullable: true })
+  phone!: string | null;
+
+  @Column({ name: 'correo_electronico', type: 'varchar', length: 150, nullable: true })
+  email!: string | null;
+
+  @Column({ name: 'direccion', type: 'varchar', length: 255, nullable: true })
+  address!: string | null;
+
+  @Column({ name: 'portada_url', type: 'varchar', length: 500, nullable: true })
+  coverUrl!: string | null;
+
+  @CreateDateColumn({ name: 'creado_en' })
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'actualizado_en' })
   updatedAt!: Date;
-
-  @OneToMany(() => BranchTypeOrmEntity, (branch) => branch.tenant)
-  branches!: BranchTypeOrmEntity[];
 }

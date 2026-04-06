@@ -1,7 +1,6 @@
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   Index,
   JoinColumn,
@@ -9,60 +8,44 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { EmployeeTypeOrmEntity } from '../../employees/infrastructure/employee.typeorm-entity';
 import { TenantTypeOrmEntity } from '../../tenants/infrastructure/tenant.typeorm-entity';
 
-@Entity({ name: 'customers' })
-@Index('idx_customers_tenant_phone', ['tenantId', 'phone'])
-@Index('idx_customers_tenant_email', ['tenantId', 'email'])
+@Entity({ name: 'clientes' })
+@Index('idx_clientes_telefono', ['phone'])
 export class CustomerTypeOrmEntity {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryColumn('char', { length: 36 })
   id!: string;
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 36 })
+  @Column({ name: 'empresa_id', type: 'char', length: 36 })
   tenantId!: string;
 
-  @Column({ name: 'full_name', type: 'varchar', length: 150 })
-  fullName!: string;
+  @Column({ name: 'nombres', type: 'varchar', length: 100 })
+  firstName!: string;
 
-  @Column('varchar', { length: 20 })
-  phone!: string;
+  @Column({ name: 'apellidos', type: 'varchar', length: 100 })
+  lastName!: string;
 
-  @Column('varchar', { length: 180 })
-  email!: string;
+  @Column({ name: 'telefono', type: 'varchar', length: 20, nullable: true })
+  phone!: string | null;
 
-  @Column({ name: 'birth_date', type: 'date', nullable: true })
+  @Column({ name: 'correo_electronico', type: 'varchar', length: 150, nullable: true })
+  email!: string | null;
+
+  @Column({ name: 'fecha_nacimiento', type: 'date', nullable: true })
   birthDate!: string | null;
 
-  @Column('text')
-  notes!: string;
+  @Column({ name: 'esta_activo', type: 'tinyint', width: 1, default: () => '1' })
+  isActive!: boolean;
 
-  @Column({
-    name: 'preferred_employee_id',
-    type: 'varchar',
-    length: 36,
-    nullable: true,
-  })
-  preferredEmployeeId!: string | null;
-
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'creado_en' })
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'actualizado_en' })
   updatedAt!: Date;
-
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deletedAt!: Date | null;
 
   @ManyToOne(() => TenantTypeOrmEntity, {
     nullable: false,
   })
-  @JoinColumn({ name: 'tenant_id' })
+  @JoinColumn({ name: 'empresa_id' })
   tenant!: TenantTypeOrmEntity;
-
-  @ManyToOne(() => EmployeeTypeOrmEntity, {
-    nullable: true,
-  })
-  @JoinColumn({ name: 'preferred_employee_id' })
-  preferredEmployee!: EmployeeTypeOrmEntity | null;
 }

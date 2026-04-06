@@ -6,64 +6,75 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { UserTypeOrmEntity } from '../../identity/infrastructure/user.typeorm-entity';
+import { EmployeeTypeOrmEntity } from '../../employees/infrastructure/employee.typeorm-entity';
 import { TenantTypeOrmEntity } from '../../tenants/infrastructure/tenant.typeorm-entity';
 import { InventoryMovementType } from '../domain/inventory-movement.entity';
 import { ProductTypeOrmEntity } from './product.typeorm-entity';
 
-@Entity({ name: 'inventory_movements' })
-@Index('idx_inventory_movements_tenant_product_created_at', [
-  'tenantId',
-  'productId',
-  'createdAt',
-])
+@Entity({ name: 'movimientos_inventario' })
+@Index('idx_movimientos_inventario_producto', ['productId'])
 export class InventoryMovementTypeOrmEntity {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryColumn('char', { length: 36 })
   id!: string;
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 36 })
+  @Column({ name: 'empresa_id', type: 'char', length: 36 })
   tenantId!: string;
 
-  @Column({ name: 'product_id', type: 'varchar', length: 36 })
+  @Column({ name: 'producto_id', type: 'char', length: 36 })
   productId!: string;
 
-  @Column({
-    type: 'enum',
-    enum: InventoryMovementType,
-  })
+  @Column({ name: 'empleado_id', type: 'char', length: 36, nullable: true })
+  employeeId!: string | null;
+
+  @Column({ type: 'varchar', length: 20 })
   type!: InventoryMovementType;
 
-  @Column({ type: 'decimal', precision: 10, scale: 3 })
-  quantity!: string;
+  @Column({ name: 'cantidad', type: 'int' })
+  quantity!: number;
 
-  @Column('varchar', { length: 200 })
-  reason!: string;
+  @Column({ name: 'motivo', type: 'varchar', length: 255, nullable: true })
+  reason!: string | null;
 
-  @Column({ name: 'reference_id', type: 'varchar', length: 36, nullable: true })
+  @Column({ name: 'stock_anterior', type: 'int' })
+  previousStock!: number;
+
+  @Column({ name: 'stock_nuevo', type: 'int' })
+  newStock!: number;
+
+  @Column({
+    name: 'referencia_tipo',
+    type: 'varchar',
+    length: 20,
+    nullable: true,
+  })
+  referenceType!: string | null;
+
+  @Column({ name: 'referencia_id', type: 'char', length: 36, nullable: true })
   referenceId!: string | null;
 
-  @Column({ name: 'created_by', type: 'varchar', length: 36 })
-  createdBy!: string;
-
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'creado_en' })
   createdAt!: Date;
+
+  @UpdateDateColumn({ name: 'actualizado_en' })
+  updatedAt!: Date;
 
   @ManyToOne(() => TenantTypeOrmEntity, {
     nullable: false,
   })
-  @JoinColumn({ name: 'tenant_id' })
+  @JoinColumn({ name: 'empresa_id' })
   tenant!: TenantTypeOrmEntity;
 
   @ManyToOne(() => ProductTypeOrmEntity, {
     nullable: false,
   })
-  @JoinColumn({ name: 'product_id' })
+  @JoinColumn({ name: 'producto_id' })
   product!: ProductTypeOrmEntity;
 
-  @ManyToOne(() => UserTypeOrmEntity, {
-    nullable: false,
+  @ManyToOne(() => EmployeeTypeOrmEntity, {
+    nullable: true,
   })
-  @JoinColumn({ name: 'created_by' })
-  createdByUser!: UserTypeOrmEntity;
+  @JoinColumn({ name: 'empleado_id' })
+  employee!: EmployeeTypeOrmEntity | null;
 }

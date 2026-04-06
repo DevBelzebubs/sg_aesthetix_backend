@@ -1,29 +1,34 @@
 import { BaseEntity } from '../../../shared/domain/base-entity';
 
 export enum AppointmentStatus {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  COMPLETED = 'COMPLETED',
-  CANCELLED = 'CANCELLED',
-  NO_SHOW = 'NO_SHOW',
+  PENDING = 'pendiente',
+  CONFIRMED = 'confirmada',
+  IN_PROGRESS = 'en_progreso',
+  COMPLETED = 'completada',
+  CANCELLED = 'cancelada',
+  NO_SHOW = 'no_asistio',
+}
+
+export enum AppointmentChannel {
+  LANDING = 'landing',
+  PANEL = 'panel',
+  WHATSAPP = 'whatsapp',
+  PHONE = 'telefono',
 }
 
 export class Appointment extends BaseEntity {
   private constructor(
     id: string,
     public readonly tenantId: string,
-    public readonly branchId: string,
     public readonly customerId: string,
     public readonly employeeId: string,
     public readonly serviceId: string,
-    public readonly scheduledAt: Date,
-    public readonly endsAt: Date,
+    public readonly reservationDate: string,
+    public readonly startTime: string,
+    public readonly endTime: string,
     public readonly status: AppointmentStatus,
-    public readonly notes: string,
-    public readonly pricePaid: number,
-    public readonly cancelledAt: Date | null,
-    public readonly cancelReason: string | null,
+    public readonly channel: AppointmentChannel,
+    public readonly notes: string | null,
     createdAt?: Date,
     updatedAt?: Date,
   ) {
@@ -33,34 +38,30 @@ export class Appointment extends BaseEntity {
   static create(params: {
     id: string;
     tenantId: string;
-    branchId: string;
     customerId: string;
     employeeId: string;
     serviceId: string;
-    scheduledAt: Date;
-    endsAt: Date;
+    reservationDate: string;
+    startTime: string;
+    endTime: string;
     status?: AppointmentStatus;
-    notes: string;
-    pricePaid: number;
-    cancelledAt?: Date | null;
-    cancelReason?: string | null;
+    channel: AppointmentChannel;
+    notes?: string | null;
     createdAt?: Date;
     updatedAt?: Date;
   }): Appointment {
     return new Appointment(
       params.id,
       params.tenantId,
-      params.branchId,
       params.customerId,
       params.employeeId,
       params.serviceId,
-      params.scheduledAt,
-      params.endsAt,
+      params.reservationDate,
+      params.startTime,
+      params.endTime,
       params.status ?? AppointmentStatus.PENDING,
-      params.notes,
-      params.pricePaid,
-      params.cancelledAt ?? null,
-      params.cancelReason ?? null,
+      params.channel,
+      params.notes ?? null,
       params.createdAt,
       params.updatedAt,
     );

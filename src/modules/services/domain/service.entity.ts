@@ -1,26 +1,16 @@
 import { BaseEntity } from '../../../shared/domain/base-entity';
 
-export enum ServiceType {
-  STANDARD = 'STANDARD',
-  PREMIUM = 'PREMIUM',
-  CLASSIC = 'CLASSIC',
-  COMBO = 'COMBO',
-  KIDS = 'KIDS',
-}
-
 export class Service extends BaseEntity {
   private constructor(
     id: string,
     public readonly tenantId: string,
-    public readonly categoryId: string,
+    public readonly categoryId: number,
     public readonly name: string,
-    public readonly description: string,
-    public readonly type: ServiceType,
-    public readonly durationMin: number,
+    public readonly description: string | null,
     public readonly price: number,
-    public readonly imageUrl: string,
+    public readonly durationMin: number,
+    public readonly accumulatesPoints: boolean,
     public readonly isActive: boolean,
-    public readonly sortOrder: number,
     createdAt?: Date,
     updatedAt?: Date,
   ) {
@@ -30,15 +20,13 @@ export class Service extends BaseEntity {
   static create(params: {
     id: string;
     tenantId: string;
-    categoryId: string;
+    categoryId: number;
     name: string;
-    description: string;
-    type: ServiceType;
-    durationMin: number;
+    description?: string | null;
     price: number;
-    imageUrl: string;
+    durationMin: number;
+    accumulatesPoints?: boolean;
     isActive?: boolean;
-    sortOrder?: number;
     createdAt?: Date;
     updatedAt?: Date;
   }): Service {
@@ -47,13 +35,11 @@ export class Service extends BaseEntity {
       params.tenantId,
       params.categoryId,
       params.name,
-      params.description,
-      params.type,
-      params.durationMin,
+      params.description ?? null,
       params.price,
-      params.imageUrl,
+      params.durationMin,
+      params.accumulatesPoints ?? true,
       params.isActive ?? true,
-      params.sortOrder ?? 0,
       params.createdAt,
       params.updatedAt,
     );

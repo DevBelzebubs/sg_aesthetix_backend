@@ -1,23 +1,19 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { TenantTypeOrmEntity } from '../../tenants/infrastructure/tenant.typeorm-entity';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'service_categories' })
+@Entity({ name: 'categoria_servicio' })
 export class ServiceCategoryTypeOrmEntity {
-  @PrimaryColumn('varchar', { length: 36 })
-  id!: string;
-
-  @Column({ name: 'tenant_id', type: 'varchar', length: 36 })
-  tenantId!: string;
+  @PrimaryGeneratedColumn({ type: 'int' })
+  id!: number;
 
   @Column('varchar', { length: 100 })
   name!: string;
 
-  @Column({ name: 'sort_order', type: 'int', default: 0 })
+  @Column({ name: 'descripcion', type: 'varchar', length: 255, nullable: true })
+  description!: string | null;
+
+  @Column({ name: 'orden', type: 'int', default: 0 })
   sortOrder!: number;
 
-  @ManyToOne(() => TenantTypeOrmEntity, {
-    nullable: false,
-  })
-  @JoinColumn({ name: 'tenant_id' })
-  tenant!: TenantTypeOrmEntity;
+  @CreateDateColumn({ name: 'creado_en' })
+  createdAt!: Date;
 }

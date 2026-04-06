@@ -2,56 +2,54 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { BranchTypeOrmEntity } from '../../tenants/infrastructure/branch.typeorm-entity';
 import { TenantTypeOrmEntity } from '../../tenants/infrastructure/tenant.typeorm-entity';
-import { UserRole } from '../domain/user.entity';
+import { RoleTypeOrmEntity } from './role.typeorm-entity';
 
-@Entity({ name: 'users' })
+@Entity({ name: 'usuarios' })
+@Index('idx_usuarios_rol_id', ['roleId'])
 export class UserTypeOrmEntity {
-  @PrimaryColumn('varchar', { length: 36 })
+  @PrimaryColumn('char', { length: 36 })
   id!: string;
 
-  @Column({ name: 'tenant_id', type: 'varchar', length: 36 })
+  @Column({ name: 'empresa_id', type: 'char', length: 36 })
   tenantId!: string;
 
-  @Column({ name: 'branch_id', type: 'varchar', length: 36, nullable: true })
-  branchId!: string | null;
+  @Column({ name: 'rol_id', type: 'int' })
+  roleId!: number;
 
-  @Column('varchar', { length: 180, unique: true })
+  @Column({ name: 'correo_electronico', type: 'varchar', length: 150, unique: true })
   email!: string;
 
-  @Column({ name: 'password_hash', type: 'varchar', length: 255 })
+  @Column({ name: 'clave_hash', type: 'varchar', length: 255 })
   passwordHash!: string;
 
-  @Column({
-    type: 'enum',
-    enum: UserRole,
-  })
-  role!: UserRole;
-
-  @Column({ name: 'is_active', type: 'boolean', default: true })
+  @Column({ name: 'esta_activo', type: 'tinyint', width: 1, default: () => '1' })
   isActive!: boolean;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @Column({ name: 'ultimo_acceso', type: 'datetime', nullable: true })
+  lastAccess!: Date | null;
+
+  @CreateDateColumn({ name: 'creado_en' })
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'actualizado_en' })
   updatedAt!: Date;
 
   @ManyToOne(() => TenantTypeOrmEntity, {
     nullable: false,
   })
-  @JoinColumn({ name: 'tenant_id' })
+  @JoinColumn({ name: 'empresa_id' })
   tenant!: TenantTypeOrmEntity;
 
-  @ManyToOne(() => BranchTypeOrmEntity, {
-    nullable: true,
+  @ManyToOne(() => RoleTypeOrmEntity, {
+    nullable: false,
   })
-  @JoinColumn({ name: 'branch_id' })
-  branch!: BranchTypeOrmEntity | null;
+  @JoinColumn({ name: 'rol_id' })
+  role!: RoleTypeOrmEntity;
 }
