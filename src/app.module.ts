@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
@@ -12,7 +12,6 @@ import { LandingModule } from './modules/landing/landing.module';
 import { LoyaltyModule } from './modules/loyalty/loyalty.module';
 import { ServicesModule } from './modules/services/services.module';
 import { TenantsModule } from './modules/tenants/tenants.module';
-import { buildTypeOrmConfig } from './shared/infrastructure/typeorm/typeorm.config';
 
 @Module({
   imports: [
@@ -20,9 +19,24 @@ import { buildTypeOrmConfig } from './shared/infrastructure/typeorm/typeorm.conf
       envFilePath: '.env',
       isGlobal: true,
     }),
+
     TypeOrmModule.forRootAsync({
-      useFactory: buildTypeOrmConfig,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get<string>('AUTH_DB_HOST'),
+        port: configService.get<number>('AUTH_DB_PORT'),
+        username: configService.get<string>('AUTH_DB_USERNAME'),
+        password: configService.get<string>('AUTH_DB_PASSWORD'),
+        database: configService.get<string>('AUTH_DB_DATABASE'),
+        autoLoadEntities: true,
+        synchronize: true, 
+        connectTimeout: 10000,
+      }),
     }),
+
+    // 3. Módulos de la aplicación
     TenantsModule,
     IdentityModule,
     ServicesModule,
